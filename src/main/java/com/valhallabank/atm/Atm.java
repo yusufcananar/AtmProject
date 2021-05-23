@@ -50,13 +50,15 @@ public class Atm {
         Client client5 = new CorporateClient("55555", "Bruce Wayne", 99999999999.99, "WayneCorp");
 
         //LinkedList kullanmak için hesap numarası listesi oluşturulmuştur.
-        LinkedList<Integer> clientNoList = new LinkedList<>();
+        LinkedList<String> clientNoList = new LinkedList<>();
         for (Integer i = 0; i < totalClients; i++){
-            clientNoList.add(i);
+            clientNoList.add("00"+(i+1));
         }
+        // Hesap No'ları görüntülemek için
+        System.out.println("Client NOs for admin : " + clientNoList);
 
         //Hesap numarası ile müşteriler bağlanıp(Map) listelenmiştir.
-        HashMap<Integer, Client> clientMap = new HashMap<>();
+        HashMap<String, Client> clientMap = new HashMap<>();
         clientMap.put(clientNoList.get(0), client1);
         clientMap.put(clientNoList.get(1), client2);
         clientMap.put(clientNoList.get(2), client3);
@@ -77,7 +79,8 @@ public class Atm {
                 moneyOperationsEntry(scanner, moneyOperationsAtm, user);
             }
             else {
-                System.out.println("-1 entered or dangerous error occured. ATM is shutting down.");
+                System.out.println("Invalid Client No\n" +
+                        "--------------------------------------------");
             }
         }
     }
@@ -89,17 +92,18 @@ public class Atm {
                     "Welcome to VALHALLA BANK.\n" +
                     "Please Enter Client No to proceed:");
 
-            Integer userClientNo = scanner.nextInt();
+            String userClientNo = scanner.next();
             boolean inputValidation = false;
 
-            if (userClientNo == -1){
+            if (userClientNo.equals("-1")){
                 atmOn = false;
+                System.out.println("-1 entered, ATM is shutting down.");
                 return null;
             }
 
             for (Object currClientNo : clientNoList) {
 
-                if (userClientNo == currClientNo) {
+                if (userClientNo.equals(currClientNo)) {
                     inputValidation = true;
                     break;
                 }
@@ -138,7 +142,6 @@ public class Atm {
 
         catch (InputMismatchException e){
             System.out.println("INVALID_CLIENT_NO::ERROR::" + e);
-            atmOn = false;
         }
         catch (Exception e){
             System.out.println("ERROR::" + e);
@@ -157,13 +160,13 @@ public class Atm {
                 System.out.println("Enter quantity of money to withdraw : ");
                 double withdrawQuantity = scanner.nextFloat();
                 user.setAccountBalance(moneyOperationsAtm.withdrawMoney(user.getAccountBalance(), withdrawQuantity));
-                System.out.println("Current Account Balance is " + user.getAccountBalance());
+                System.out.println("Current Account Balance of"+ user.getName() +" is " + user.getAccountBalance());
             }
             else if (operationKey.equals(DEPOSIT_MONEY)){
                 System.out.println("Enter quantity of money to deposit : ");
                 double depositQuantity = scanner.nextFloat();
                 user.setAccountBalance(moneyOperationsAtm.depositMoney(user.getAccountBalance(), depositQuantity));
-                System.out.println("Current Account Balance is " + user.getAccountBalance());
+                System.out.println("Current Account Balance of "+ user.getName() +" is " + user.getAccountBalance());
             }
             else{
                 throw new InputMismatchException();
